@@ -31,30 +31,95 @@ client = openai.OpenAI(api_key=OPENAI_API_KEY)
 # # Constants
 THREAD_DB_FILE = "threads_db"
 VECTOR_STORE_META_FILE = "vector_store_meta.json"
-SYSTEM_PROMPT = SYSTEM_PROMPT = """
-You are name is Elipendo Millantoni or Daniel Wandwi or Elisha Daudi depending on a persona of person aproaching you,be strict to your personal since your work is very sensitive . For the USCF Fellowship Church at CCT TAKWIMU. 
-When someone greets or starts a conversation, respond with a personalized greeting and explain how you can help.
-Base your explanation on the context of the user's message.
+SYSTEM_PROMPT  = """You are names are Elisha Daudi, Daniel Wandwi, Elipendo Millanton,Make sure you introduce yourself , Responsible to provide engaging, organized, and informative conversations to users required to share updates about missions, encourage participation, and simplify donation processes. Respond in an enthusiastic, empathetic, and professional manner, ensuring every interaction feels personal and valuable.
 
-For example:
-- If they mention missions, focus on mission-related assistance.
-- If they ask about donations, explain how they can donate.
-- If they ask general questions, introduce all your capabilities.
+Your primary goals are to:
 
-Here are your general capabilities:
-"Here's how I can help you:"
-        "- Share information about our mission, including our vision, goals, and current projects.\n"
-        "- Provide details about upcoming and past mission events.\n"
-        "- Assist with donations for mission fundraising.\n"
-        "- Share inspiring stories and testimonies from mission outreach.\n"
-        "- Display pictures and highlights from previous missions.\n"
-        "- Answer your questions about our mission goals and progress.\n\n"
+Inform: Provide detailed and accurate information about USCF missions, updates, and services.
+Engage: Create conversations that are interesting, respectful, and captivating, motivating users to stay engaged.
+Encourage Donations: Smoothly guide users toward contributing financially or volunteering for mission outreach programs.
+Be Accessible: Answer questions clearly and reduce confusion, offering complete responses to prevent unnecessary back-and-forth exchanges.
+Use the following tone and principles in your conversations:
 
-Ensure your response matches the user's language whenever possible and do not answer questions that are not related to the church by ANY MEANS.Be friendly and cheerful,use emojis when possible to make the conversation more engaging and warmer.
-"""
+Warm and welcoming to make users feel valued.
+Clear and concise when providing instructions or answering queries.
+Encouraging and inspirational to motivate participation in missions or donations.
+Respectful and considerate when addressing concerns or hesitations.
+When responding to users:
+
+Personalize the response if the user provides their name.
+Always reference ongoing and past missions, emphasizing their impact.
+Proactively share relevant details (e.g., gallery links, mission timelines, or donation instructions) without waiting for additional questions.
+Continuously highlight the value of user contributions, whether financial or through volunteering.
+Template for Responses:
+When responding, use the following structured approach:
+
+1. Warm Greeting:
+"Hello [User Name]! It’s wonderful to hear from you. My name is Eliipendo Millanton I'm here to help with mission updates, donations, or any questions you have."
+
+2. Provide Key Mission Details:
+"🌟 Our Missions:
+
+Mtwara Outreach (Feb 15-22 2025): Till the whole world knows – MARK 16:15. We’ll be spreading the gospel and engaging with the Mtwara community to make a lasting spiritual impact.
+Simiyu Mission (July 2024): A life-changing outreach in collaboration with USCF ARDHI. Over 200 lives were saved, and impactful activities were carried out. Check pictures from BUDEKWA SIMIYU."
+3. Explain How the Assistant Can Help:
+"🤝 How I Can Help:
+
+Share mission details & updates to keep you informed.
+Provide donation instructions for Mobile Money, Bank Transfers, or other methods.
+Help you join our fellowship or become a volunteer for future missions.
+Share inspiring testimonies and pictures from previous missions."
+4. Donation Encouragement:
+"💖 Your support makes a difference! Whether it’s a prayer, volunteering, or a financial donation, every contribution brings us closer to our mission goals. Feel free to ask, 'How can I donate?' or 'How can I volunteer?' to get started."
+
+5. Contact Information:
+"📞 Contact Leaders:
+
+Treasurer: +255686971266 (Jelius Heneriko)
+Coordinators: +255 693 827 599, +255 623 546 663."
+6. Closing with Encouragement:
+"Let me know how I can assist you further! Together, we’re transforming lives for Christ. TILL THE WHOLE WORLD KNOWS 😊"
+
+Sample Output:
+User Input: "Hi, I’d like to know about Mtwara mission and how I can help."
+
+Chatbot Response: "Hello! It’s wonderful to hear from you. My name is Elisha Daudi USCF Assistant here to share updates and help you support our missions. 😊
+                    Donation Details
+                    You can support USCF’s mission efforts through:
+                    Mobile Money:
+                    USCF CCT TAKWIMU ZENO PAY (you’ll be prompted to enter the amount).
+                    Bank Transfer:
+                    Account Name: USCF CCT TAKWIMU ,Account Number: 20810039672 ,Bank: NMB
+                    Cash: Donate in person at our office or partner churches,Lipa Namba: 19691543 Vodacom: 0755 327 135
+
+🌟 Our Missions:
+
+Mtwara Outreach (Feb 15-22 2025): Till the whole world knows – MARK 16:15. We’ll be spreading the gospel and engaging with the Mtwara community to make a lasting spiritual impact. This is a wonderful opportunity to share the love of Christ and make a difference!
+Simiyu Mission (July 2024): A life-changing outreach in collaboration with USCF ARDHI. Over 200 lives were saved, and impactful activities were carried out. Check pictures from BUDEKWA SIMIYU here.
+🤝 How You Can Help:
+
+You can donate to support this mission through Mobile Money, Bank Transfers, or in person.
+Volunteering is another fantastic way to get involved! Let me know if you’re interested, and I’ll guide you through the process.
+Stay updated with mission details and photos or share testimonies from previous events to inspire others.
+💖 Your contributions help us fulfill our calling and transform lives for Christ. Would you like to donate today or join our mission outreach team?
+Donation Details
+You can support USCF’s mission efforts through:
+Mobile Money:
+USCF CCT TAKWIMU ZENO PAY (you’ll be prompted to enter the amount).
+Bank Transfer:
+Account Name: USCF CCT TAKWIMU ,Account Number: 20810039672 ,Bank: NMB
+Cash: Donate in person at our office or partner churches,Lipa Namba: 19691543 Vodacom: 0755 327 135
+📞 Contact Leaders:
+
+Treasurer: +255686971266 (Jelius Heneriko)
+Coordinators: +255 693 827 599, +255 623 546 663.
+Feel free to ask me, 'How can I donate?' or 'How do I join the Mtwara mission?' 😊"
+
+ 
+    """
 
 VECTOR_STORE_NAME = "Takwimu_USCF_Vector_Store"
-FILE_PATHS = ["../Hybrid_whatsap_bot/app/Bot_Data/USCF.txt"]
+FILE_PATHS = ["../Hybrid_whatsap_bot/app/Bot_Data/USCF.txt","../Hybrid_whatsap_bot/app/Bot_Data/MISSION SURVEY.pdf","../Hybrid_whatsap_bot/app/Bot_Data/RISALA MAHAFALI YA 3.pdf"]
 
 
 
@@ -251,73 +316,75 @@ def run_assistant(thread_id, name, message_body, wa_id):
     Returns:
         str: The assistant's response or an error message.
     """
-    wa_id=wa_id
     try:
         logging.info(f"Running assistant for thread: {thread_id}")
 
-        # Initialize conversation history with system instructions
+        # Initialize conversation history
         conversation_history = [
             {'role': 'system', 'content': f"You are having a conversation with the client named {name}. Instructions: {SYSTEM_PROMPT}"},
             {'role': 'user', 'content': message_body}
         ]
 
-        while True:
-            # Send the message and get the response
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=conversation_history,
-                functions=uscf_functions,
-                function_call="auto"
-            )
+        # Send the user's input and get the response
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=conversation_history,
+            functions=uscf_functions,
+            function_call="auto"
+        )
 
-            if not response.choices or not response.choices[0].message:
-                logging.error("No response choices or message content from assistant.")
-                return "Samahani, kuna tatizo. Tafadhali jaribu tena baadaye."
+        if not response.choices or not response.choices[0].message:
+            logging.error("No response choices or message content from assistant.")
+            return "Samahani, kuna tatizo. Tafadhali jaribu tena baadaye."
 
-            response_message = response.choices[0].message
+        response_message = response.choices[0].message
 
-            if hasattr(response_message, "function_call") and response_message.function_call:
-                function_called = response_message.function_call.name
-                function_args = json.loads(response_message.function_call.arguments)
+        # Check if the assistant requested a function call
+        if hasattr(response_message, "function_call") and response_message.function_call:
+            function_called = response_message.function_call.name
+            function_args = json.loads(response_message.function_call.arguments)
 
-                # Map function names to actual implementations
-                available_functions = {
-                   
-                    "provide_payment_instructions": provide_payment_instructions,
-                    "get_mission_progress": get_mission_progress,
-                    "process_donation": process_donation,
+            # Available function mapping
+            available_functions = {
+                "provide_payment_instructions": provide_payment_instructions,
+                "get_mission_progress": get_mission_progress,
+                "process_donation": process_donation,
+                "provide_welcome_message": provide_welcome_message,
+            }
+
+            if function_called in available_functions:
+                function_to_call = available_functions[function_called]
+                try:
+                    # Match function arguments dynamically
+                    # Provide default values for missing arguments
+                    required_args = function_to_call.__code__.co_varnames
+                    args_with_defaults = {
+                        key: function_args.get(key, name if key == "name" else None)
+                        for key in required_args
+                    }
                     
-                }
+                    # Call the function with matched arguments
+                    result = function_to_call(**args_with_defaults)
+                    logging.info(f"Function '{function_called}' executed successfully.")
+                except TypeError as e:
+                    logging.error(f"Argument mismatch for '{function_called}': {e}")
+                    return "Samahani, kuna tatizo katika kupokea taarifa zako. Tafadhali jaribu tena."
 
-                # Validate and call the function
-                if function_called in available_functions:
-                    function_to_call = available_functions[function_called]
-                    try:
-                        # Match the arguments dynamically
-                        result = function_to_call(
-                            **{
-                                key: function_args.get(key)
-                                for key in function_to_call.__code__.co_varnames
-                            }
-                        )
-                        logging.info(f"Function '{function_called}' executed successfully.")
-                    except TypeError as e:
-                        logging.error(f"Error in function argument matching for '{function_called}': {e}")
-                        return f"Samahani, kuna tatizo katika kupokea taarifa zako. Tafadhali jaribu tena."
-
-                    # Append the result to conversation history and continue
-                    if isinstance(result, list):
-                        result_str = "\n".join([f"{item['title']}: {item['description']}" for item in result])
-                    else:
-                        result_str = str(result)
-
-                    conversation_history.append({"role": "assistant", "content": result_str})
+                # Append the result to conversation history
+                if isinstance(result, str):
+                    conversation_history.append({"role": "assistant", "content": result})
+                    return result
                 else:
-                    logging.error(f"Function '{function_called}' not found.")
-                    return "Samahani, huduma unayoomba haipatikani kwa sasa. Tafadhali jaribu tena."
+                    logging.error(f"Unexpected return type from '{function_called}': {type(result)}")
+                    return "Samahani, kuna tatizo. Tafadhali jaribu tena."
+
             else:
-                # Return final response if no function call is detected
-                return response_message.content
+                logging.error(f"Function '{function_called}' not found.")
+                return "Samahani, huduma unayoomba haipatikani kwa sasa. Tafadhali jaribu tena."
+
+        # If no function call is requested, return the assistant's response
+        return f"{response_message.content} **{name}**"
+
     except Exception as e:
         logging.error(f"Error running assistant: {str(e)}")
         return "Samahani, kuna tatizo. Tafadhali jaribu tena baadaye."
@@ -340,7 +407,7 @@ def get_or_create_retrieval_assistant(vector_store_id):
         assistant = client.beta.assistants.create(
             name="RetrievalAssistant",
             instructions=SYSTEM_PROMPT,
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             tools=[{"type": "file_search"}],
         )
         updated_assistant = client.beta.assistants.update(
@@ -377,10 +444,14 @@ def initialize_assistants():
 retrieval_assistant_id = initialize_assistants()
 
 # Define routing keywords and determine assistant type
-function_call_keywords = function_call_keywords = {
-    "donate", "payment",  "process payment",  "how to help", "get involved", "how to donate", "mobile money", "lipa namba", 
-    "bank account", "reach out", "payment method" ,"any updates","get mission progress",
-}
+function_call_keywords = [
+    "donate", "payment", "instructions", "mobile money", "bank account", "lipa namba", 
+    "how to donate", "donation method", "mission progress", "fundraising", "status", 
+    "update", "mission details","funds raised", "volunteers","confirm donation", 
+    "make donation", "send money", "donate now", "process payment","start", "welcome", 
+    "hello", "hi", "greetings", "introduce", "help", "about us"
+]
+
 def determine_assistant(message_body):
     """Determines the appropriate assistant based on message content."""
     if any(keyword in message_body.lower() for keyword in function_call_keywords):
@@ -402,10 +473,27 @@ def get_or_create_thread(wa_id):
                 raise RuntimeError("Failed to create thread.")
         return thread_id
 
+import threading
+
+# Thread lock for concurrency
+message_lock = threading.Lock()
+
+processed_messages = set()  # Store processed WhatsApp message IDs
 
 
-def run_retrieval_assistant(thread_id, name, message_body, assistant_id):
+def run_retrieval_assistant(thread_id, name, message_body, assistant_id,wa_id):
+
     """Run retrieval assistant and get a response."""
+    global processed_messages
+
+    with message_lock:
+        if wa_id in processed_messages:
+            logging.info(f"Message with ID {wa_id} already processed.")
+            return
+        # Mark the message as processed
+        processed_messages.add(wa_id)
+
+
     try:
         # Add the user message to the thread
         user_message = client.beta.threads.messages.create(
@@ -420,10 +508,28 @@ def run_retrieval_assistant(thread_id, name, message_body, assistant_id):
             assistant_id=assistant_id,
         )
 
-        # Wait for the run to complete
+        max_attempts = 10  # Maximum attempts before timeout
+        attempts = 0
+        sleep_interval = 3  # Sleep 2 seconds between requests
+
+        # Poll for run status
         while run.status != "completed":
-            time.sleep(0.5)
-            run = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+            if attempts >= max_attempts:
+                logging.error("Run did not complete within the expected timeframe.")
+                return "Sorry, the request is taking too long. Please try again later."
+
+            time.sleep(sleep_interval)
+            attempts += 1
+
+            # Fetch the latest run status
+            try:
+                run = client.beta.threads.runs.retrieve(
+                    thread_id=thread_id, run_id=run.id
+                )
+            except ValueError as e:
+                logging.error(f"Error retrieving run status: {e}")
+                return "Sorry, there was an error processing your request. Please try again later."
+
  # Get the assistant's response
         messages = client.beta.threads.messages.list(thread_id=thread_id)
         for msg in messages.data:
@@ -444,6 +550,7 @@ def run_retrieval_assistant(thread_id, name, message_body, assistant_id):
         logging.error(f"Error running retrieval assistant: {e}")
         return "Sorry, an error occurred. Please try again later."
     
+
 
 def get_or_create_thread(wa_id):
     """Retrieve or create a thread for the user."""
@@ -473,4 +580,4 @@ def generate_response(message_body, wa_id, name):
         return run_assistant(thread_id, name, message_body,wa_id)
     else:
         logging.info("Routing to retrieval assistant.")
-        return run_retrieval_assistant(thread_id, name, message_body, retrieval_assistant_id)
+        return run_retrieval_assistant(thread_id, name, message_body, retrieval_assistant_id,wa_id)
