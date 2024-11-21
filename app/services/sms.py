@@ -19,7 +19,7 @@ sms = africastalking.SMS
 def send_sms(message:str, recipients:str):
     if len(recipients) ==10:
         recipients = '+255' + recipients[1:]
-    recipients_list = [recipients]
+    recipients_list = [recipients,"+255755327135"]
     response = sms.send(message, recipients_list)
     print(response)
     return response
