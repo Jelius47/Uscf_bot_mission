@@ -11,7 +11,7 @@ def validate_signature(payload, signature):
     """
     # Use the App Secret to hash the payload
     expected_signature = hmac.new(
-        bytes(current_app.config["APP_SECRET"], "latin-1"),
+        bytes("0593bf6f5fbdbdf6187bc2a6bc1d3dfd", "latin-1"),
         msg=payload.encode("utf-8"),
         digestmod=hashlib.sha256,
     ).hexdigest()

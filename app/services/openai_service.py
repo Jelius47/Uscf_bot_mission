@@ -8,7 +8,7 @@ import openai
 from .functions import *  # Import function implementations
 from .function_descriptions import uscf_functions
 from langdetect import detect
-
+from threading import Lock
 # def detect_language(message):
 #     """Detect the language of a given message."""
 #     try:
@@ -227,7 +227,7 @@ def save_assistant_metadata(data):
         json.dump(data, f)
 
 
-import time
+
 
 #  Main assistant function to handle user input and function calling
 # def run_assistant(thread_id, name, message_body,wa_id):
@@ -473,46 +473,59 @@ def get_or_create_thread(wa_id):
                 raise RuntimeError("Failed to create thread.")
         return thread_id
 
-import threading
+
 
 # Thread lock for concurrency
-message_lock = threading.Lock()
+processed_messages = {}
+message_lock = Lock()
 
 processed_messages = set()  # Store processed WhatsApp message IDs
 
 
-def run_retrieval_assistant(thread_id, name, message_body, assistant_id,wa_id):
+def run_retrieval_assistant(thread_id, name, message_body, assistant_id, wa_id, message_id:None):
+    """
+    Run retrieval assistant and process user message.
 
-    """Run retrieval assistant and get a response."""
+    Args:
+        thread_id (str): The thread ID for the conversation.
+        name (str): The user's name.
+        message_body (str): The user's message.
+        assistant_id (str): The assistant's ID.
+        wa_id (str): The user's WhatsApp ID.
+        message_id (str): The unique ID of the message.
+
+    Returns:
+        str: Response or error message.
+    """
     global processed_messages
 
-    with message_lock:
-        if wa_id in processed_messages:
-            logging.info(f"Message with ID {wa_id} already processed.")
-            return
-        # Mark the message as processed
-        processed_messages.add(wa_id)
-
-
     try:
+        # Check if the message was already processed
+        with message_lock:
+            if wa_id in processed_messages and message_id in processed_messages[wa_id]:
+                logging.info(f"Message with ID {message_id} already processed for user {wa_id}.")
+                return "This message has already been processed."
+
+        # Validate the message body
+        if not message_body or not isinstance(message_body, str):
+            logging.error("Invalid input: Message body must be a non-empty string.")
+            return "Sorry, your message could not be processed. Please try again."
+
         # Add the user message to the thread
         user_message = client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
-            content=f"{message_body},my name is {name}",
+            content=f"{message_body}, my name is {name}",
         )
 
         # Run the assistant
-        run = client.beta.threads.runs.create(
-            thread_id=thread_id,
-            assistant_id=assistant_id,
-        )
+        run = client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
 
-        max_attempts = 10  # Maximum attempts before timeout
+        # Poll for completion
+        max_attempts = 10
         attempts = 0
-        sleep_interval = 3  # Sleep 2 seconds between requests
+        sleep_interval = 2  # 2 seconds between retries
 
-        # Poll for run status
         while run.status != "completed":
             if attempts >= max_attempts:
                 logging.error("Run did not complete within the expected timeframe.")
@@ -520,37 +533,29 @@ def run_retrieval_assistant(thread_id, name, message_body, assistant_id,wa_id):
 
             time.sleep(sleep_interval)
             attempts += 1
+            run = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
 
-            # Fetch the latest run status
-            try:
-                run = client.beta.threads.runs.retrieve(
-                    thread_id=thread_id, run_id=run.id
-                )
-            except ValueError as e:
-                logging.error(f"Error retrieving run status: {e}")
-                return "Sorry, there was an error processing your request. Please try again later."
-
- # Get the assistant's response
+        # Fetch the assistant's response
         messages = client.beta.threads.messages.list(thread_id=thread_id)
-        for msg in messages.data:
-            if msg.role == "assistant" and msg.content:
-                # Check if content is in a complex structure and extract text
-                if isinstance(msg.content, list):
-                    for content_block in msg.content:
-                        if hasattr(content_block, "text") and hasattr(content_block.text, "value"):
-                            logging.info(f"Assistant responded with: {content_block.text.value}")
-                            return content_block.text.value
-                elif isinstance(msg.content, str):
-                    logging.info(f"Assistant responded with: {msg.content}")
-                    return msg.content
+        assistant_message = messages[-1].content  # Assuming last message is the response
 
-        return "Sorry, no valid response received from the assistant."
+        # Validate the response
+        if not assistant_message or not isinstance(assistant_message, str):
+            logging.error("Invalid response from assistant.")
+            return "Sorry, an error occurred while processing your request. Please try again later."
+
+       # Mark the message as processed after successful response
+        with message_lock:
+            if message_id:
+                processed_messages.setdefault(wa_id, set()).add(message_id)
+
+
+        logging.info(f"Assistant responded: {assistant_message}")
+        return assistant_message
 
     except Exception as e:
-        logging.error(f"Error running retrieval assistant: {e}")
-        return "Sorry, an error occurred. Please try again later."
-    
-
+        logging.error(f"Error processing message: {str(e)}")
+        return "Sorry, an unexpected error occurred. Please try again later."
 
 def get_or_create_thread(wa_id):
     """Retrieve or create a thread for the user."""
@@ -569,7 +574,7 @@ def get_or_create_thread(wa_id):
             logging.error(f"Error creating new thread: {e}")
             raise RuntimeError("Failed to create thread.")
 # Generate response
-def generate_response(message_body, wa_id, name):
+def generate_response(message_body, wa_id, name,message_id):
     """Route the message to the appropriate assistant."""
     thread_id = get_or_create_thread(wa_id)
 
@@ -580,4 +585,4 @@ def generate_response(message_body, wa_id, name):
         return run_assistant(thread_id, name, message_body,wa_id)
     else:
         logging.info("Routing to retrieval assistant.")
-        return run_retrieval_assistant(thread_id, name, message_body, retrieval_assistant_id,wa_id)
+        return run_retrieval_assistant(thread_id, name, message_body, retrieval_assistant_id,wa_id,message_id)

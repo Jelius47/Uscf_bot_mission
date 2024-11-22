@@ -46,17 +46,21 @@ import requests
 
 def send_whatsapp_message(recipient_waid, message):
     
-    url = f"https://graph.facebook.com/{VERSION}/{os.getenv('PHONE_NUMBER_ID')}/messages"
+    url = f"https://graph.facebook.com/v20.0/{os.getenv('PHONE_NUMBER_ID')}/messages"
     headers = {
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
     data = {
         "messaging_product": "whatsapp",
+        "receipient_type":"individual",
         "to": recipient_waid,
         "type": "text",
-        "text": {"body": message}
+        "text": {
+            "preview_url": True,
+            "body": message}
     }
+
 
     response = requests.post(url, headers=headers, json=data)
     if response.status_code == 200:
@@ -65,15 +69,37 @@ def send_whatsapp_message(recipient_waid, message):
         logging.error(f"Failed to send message to {recipient_waid}: {response.text}")
 
 
-# Process text to match WhatsApp message style (e.g., replacing brackets, formatting text)
-def process_text_for_whatsapp(text):
-    # Remove brackets and their content
-    text = re.sub(r"\【.*?\】", "", text).strip()
+import re
 
-    # Replace double asterisks with single asterisks (for bold formatting in WhatsApp)
+def process_text_for_whatsapp(text):
+    
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("Invalid input: Text must be a non-empty string.")
+
+    
+    # Remove content inside custom brackets like 【 】 and normalize whitespace
+    text = re.sub(r"【.*?】", "", text).strip()
+    
+    # Normalize quotes to straight quotes
+    text = text.replace("“", '"').replace("”", '"').replace("‘", "'").replace("’", "'")
+
+    # Convert double asterisks (Markdown style) to single asterisks (WhatsApp style)
+    text = re.sub(r"\*\*(.*?)\*\*", r"*\1*", text)
+
+    # Ensure URLs are intact by keeping space after brackets
+    text = re.sub(r"(?<=\))(?!\s)", " ", text)  # Add space after ")" if none exists
+
+    # Remove unnecessary extra spaces or newlines
+    # text = re.sub(r"\s+", " ", text).strip()
+
+    # Remove brackets and their content
+    text = re.sub(r"【.*?】", "", text).strip()
+
+    # Replace double asterisks with single asterisks for WhatsApp formatting
     whatsapp_style_text = re.sub(r"\*\*(.*?)\*\*", r"*\1*", text)
 
     return whatsapp_style_text
+
 
 
 # Handle incoming WhatsApp message and respond
