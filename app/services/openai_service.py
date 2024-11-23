@@ -489,8 +489,7 @@ function_call_keywords = [
     "donate", "payment", "instructions", "mobile money", "bank account", "lipa namba", 
     "how to donate", "donation method", "mission progress", "fundraising", "status", 
     "update", "mission details","funds raised", "volunteers","confirm donation", 
-    "make donation", "send money", "donate now", "process payment","start", "welcome", 
-    "hello", "hi", "greetings", "introduce", "help", "about us"
+    "make donation", "send money", "donate now", "process payment","start", "help", "about us"
 ]
 
 def determine_assistant(message_body):
