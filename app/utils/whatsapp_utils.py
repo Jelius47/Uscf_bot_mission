@@ -103,25 +103,112 @@ def process_text_for_whatsapp(text):
 
 
 # Handle incoming WhatsApp message and respond
+# def process_whatsapp_message(body):
+#     logging.info("Processing WhatsApp message...",body)
+#     try:
+#         wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
+#         name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
+#         message_body = body["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]
+#         # message_id = body["entry"][0]["changes"][0]["value"]["messages"][0]["id"]
+
+#         logging.info(f"Received message from {name} ({wa_id}): {message_body}")
+
+#         # Process and respond
+#         response = generate_response(message_body, wa_id, name)
+#         formatted_response = process_text_for_whatsapp(response)
+
+#         # Send the response
+#         # data = get_text_message_input(RECIPIENT_WAID, formatted_response)
+#         send_whatsapp_message(wa_id,formatted_response)
+#     except KeyError as e:
+#         logging.error(f"KeyError during message processing: {e}")
+#     except Exception as e:
+#         logging.error(f"Unexpected error during message processing: {e}")
+
+import threading
+from collections import deque
+
+# Limited-size deque to store processed message IDs
+processed_messages = deque(maxlen=1000)  # Stores up to 1000 message IDs
+message_lock = threading.Lock()
+
 def process_whatsapp_message(body):
+    """
+    Process incoming WhatsApp message and generate a response.
+    Args:
+        body (dict): The incoming webhook payload from WhatsApp.
+    Returns:
+        None
+    """
+    global processed_messages
+
     try:
-        wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
-        name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
-        message_body = body["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]
+        # Extract WhatsApp-specific fields
+        wa_id = (
+            body.get("entry", [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+            .get("contacts", [{}])[0]
+            .get("wa_id")
+        )
+        name = (
+            body.get("entry", [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+            .get("contacts", [{}])[0]
+            .get("profile", {})
+            .get("name", "User")
+        )
+        message_body = (
+            body.get("entry", [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+            .get("messages", [{}])[0]
+            .get("text", {})
+            .get("body")
+        )
+        message_id = (
+            body.get("entry", [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+            .get("messages", [{}])[0]
+            .get("id")
+        )
+        sender_id = (
+            body.get("entry", [{}])[0]
+            .get("changes", [{}])[0]
+            .get("value", {})
+            .get("messages", [{}])[0]
+            .get("from")
+        )
 
         logging.info(f"Received message from {name} ({wa_id}): {message_body}")
 
-        # Process and respond
-        response = generate_response(message_body, wa_id, name,)
-        formatted_response = process_text_for_whatsapp(response)
+        # Check if the message is from a user (not the bot itself)
+        if sender_id != wa_id:
+            logging.info("Message is from the bot itself. Ignoring.")
+            return
 
-        # Send the response
-        # data = get_text_message_input(RECIPIENT_WAID, formatted_response)
-        send_whatsapp_message(wa_id,formatted_response)
+        # Check if the message has already been processed
+        with message_lock:
+            if message_id in processed_messages:
+                logging.info(f"Message with ID {message_id} already processed.")
+                return
+            # Mark the message as processed
+            processed_messages.append(message_id)
+
+        # Generate response
+        response = generate_response(message_body, wa_id, name)
+
+        # Format and send the response
+        formatted_response = process_text_for_whatsapp(response)
+        send_whatsapp_message(wa_id, formatted_response)
+
     except KeyError as e:
         logging.error(f"KeyError during message processing: {e}")
     except Exception as e:
-        logging.error(f"Unexpected error during message processing: {e}")
+        logging.error(f"Error processing message: {e}")
+
 
 
 # Check if the incoming event is a valid WhatsApp message

@@ -91,20 +91,20 @@ uscf_functions = [
                 #     "required": ["mission_name"]
                 # }
                 # },
-                {
-                    "name": "provide_welcome_message",
-                    "description": "Generate and provide a dynamic welcome message introducing the assistant's capabilities and available services.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "user_name": {
-                                "type": "string",
-                                "description": "The name of the user, if available, to personalize the welcome message.",
-                            }
-                        },
-                        "required": []
-                    }
-                    },
+                # {
+                #     "name": "provide_welcome_message",
+                #     "description": "Generate and provide a dynamic welcome message introducing the assistant's capabilities and available services.",
+                #     "parameters": {
+                #         "type": "object",
+                #         "properties": {
+                #             "user_name": {
+                #                 "type": "string",
+                #                 "description": "The name of the user, if available, to personalize the welcome message.",
+                #             }
+                #         },
+                #         "required": []
+                #     }
+                #     },
                     {
                         "name": "provide_payment_instructions",
                         "description": "Provide instructions on how to make a donation.",

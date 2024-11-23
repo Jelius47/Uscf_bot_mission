@@ -64,36 +64,36 @@ logging.basicConfig(level=logging.INFO)
 #     return missions.get(mission_name,( "Mtwara Outreach"+"\n"+"Simiyu Mission"))
 
 
-def provide_welcome_message(name):
-    """
-    Provides a dynamic welcome message with key information about the fellowship.
+# def provide_welcome_message(name):
+#     """
+#     Provides a dynamic welcome message with key information about the fellowship.
 
-    Args:
-        name (str, optional): The name of the user to personalize the message.
+#     Args:
+#         name (str, optional): The name of the user to personalize the message.
 
-    Returns:
-        str: A formatted welcome message with fellowship details.
-    """
-    # Dynamic details for the welcome message
+#     Returns:
+#         str: A formatted welcome message with fellowship details.
+#     """
+#     # Dynamic details for the welcome message
   
 
-    # Greeting message
+#     # Greeting message
 
-    # Combine the greeting with dynamic details
-    return (f"Hello! How can I assist you today? **{name}** here is what you can expect to know about **USCF CCT TAKWINU** \n "
-        "🌟 **Our Missions**:\n\n"
-        "- **Mtwara Outreach (Feb 15-22 2025)**:`Till the whole world knows **MARK 16:15**`.\n"
-        "- **Simiyu Mission (July 2024):** In collaboration with USCF ARDHI; more than 200 lives were saved! `\nPictures for the events in the entire mission at **BUDEKWA SIMIYU**: https://drive.google.com/drive/folders/1fqDeB5mxvCnyBbohH8ou7Fci_bUZmOPQ `.\n\n"
-        "🤝 **How I Can Help**:\n\n"
-        "- Share mission details & updates.\n"
-        "- Provide donation instructions (Mobile Money, Bank Transfer, etc.).\n"
-        "- Help you join our fellowship or volunteer.\n"
-        "- Share testimonies and photos from past events.\n\n"
-        "📞 **Contact Leaders**:\n\n"
-        "- **Treasurer:** +255686971266 Jelius Heneriko\n"
-        "- **Coordinators:** *+255 693 827 599*  *+255 623 546 663* Elikana Razaro\n\n"
-        "**Feel free to ask**, Eg: 'How can I help' or'How can I donate?' or 'Tell me more about Mtwara mission!' 'Tell me about **USCF CCT TAKWIMU**"
-    )
+#     # Combine the greeting with dynamic details
+#     return (f"Hello! How can I assist you today? **{name}** here is what you can expect to know about **USCF CCT TAKWINU** \n "
+#         "🌟 **Our Missions**:\n\n"
+#         "- **Mtwara Outreach (Feb 15-22 2025)**:`Till the whole world knows **MARK 16:15**`.\n"
+#         "- **Simiyu Mission (July 2024):** In collaboration with USCF ARDHI; more than 200 lives were saved! `\nPictures for the events in the entire mission at **BUDEKWA SIMIYU**: https://drive.google.com/drive/folders/1fqDeB5mxvCnyBbohH8ou7Fci_bUZmOPQ `.\n\n"
+#         "🤝 **How I Can Help**:\n\n"
+#         "- Share mission details & updates.\n"
+#         "- Provide donation instructions (Mobile Money, Bank Transfer, etc.).\n"
+#         "- Help you join our fellowship or volunteer.\n"
+#         "- Share testimonies and photos from past events.\n\n"
+#         "📞 **Contact Leaders**:\n\n"
+#         "- **Treasurer:** +255686971266 Jelius Heneriko\n"
+#         "- **Coordinators:** *+255 693 827 599*  *+255 623 546 663* Elikana Razaro\n\n"
+#         "**Feel free to ask**, Eg: 'How can I help' or'How can I donate?' or 'Tell me more about Mtwara mission!' 'Tell me about **USCF CCT TAKWIMU**"
+#     )
 
 
     
